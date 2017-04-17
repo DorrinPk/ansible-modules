@@ -1,0 +1,76 @@
+---
+
+
+- hosts: all
+
+  tasks:
+
+  - name: install nrpe plugins yum
+    when: ansible_pkg_mgr =="yum"
+    become: yes
+    become_user: root
+    package: name=nagios-plugins-all
+
+  - name: install nrpe plugins yum
+    when: ansible_pkg_mgr =="yum"
+    become: yes
+    become_user: root
+    package: name=nagios-plugins-all
+
+  - name: install nrpe-apt
+    when: ansible_pkg_mgr == "apt"
+    become: yes
+    become_user: root
+    package: name=nagios-nrpe-server
+
+  - name: install nrpe-yum
+    when: ansible_pkg_mgr == "yum"
+    become: yes
+    become_user: root
+    package: name=nrpe
+
+  - name: copy config for ubuntu
+    when: ansible_pkg_mgr == "apt"
+    become: yes
+    become_user: root
+    copy:
+      src: ../files/ubuntu-nrpe.cfg
+      dest: /etc/nagios/nrpe.cfg
+
+  - name: nrpe.cnf for RHEL
+    when: ansible_pkg_mgr == "yum"
+    become: yes
+    become_user: root
+    copy:
+      src: ../files/RHEL-nrpe.cfg
+      dest: /etc/nagios/nrpe.cfg
+
+  - name: check_ro_mounts for apt
+    when: ansible_pkg_mgr == "apt"
+    become: yes
+    become_user: root
+    copy:
+      src: ../files/check_ro_mounts
+      dest: /usr/lib/nagios/plugins/check_ro_mounts
+      mode: 0755
+
+  - name: check_ro_mounts for yum
+    when: ansible_pkg_mgr == "yum"
+    become: yes
+    become_user: root
+    copy:
+      src: ../files/check_ro_mounts_64
+      dest: /usr/lib64/nagios/plugins/check_ro_mounts
+      mode: 0755
+
+  - name : restart nrpe-yum
+    when: ansible_pkg_mgr == "yum"
+    become: yes
+    become_user: root
+    command: /etc/init.d/nrpe restart
+
+  - name : restart nrpe-ubuntu
+    when: ansible_pkg_mgr == "apt"
+    become: yes
+    become_user: root
+    command: /etc/init.d/nagios-nrpe-server restart
