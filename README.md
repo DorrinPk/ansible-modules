@@ -20,5 +20,3 @@ to run the collectd module, fill up the tmp file with the ip addrs of your desir
 
 ### ANSIBLE VERSION 2.0.0 AND HIGHER REQUIRED
 
-influxdb interface : http://10.0.1.227:8083/
-grafana interface : http://10.0.1.227:3000/
